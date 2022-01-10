@@ -6,17 +6,11 @@ from flask import Flask, request, render_template, url_for
 
 app = Flask(__name__)
 
-# services, browser = pychromecast.discovery.discover_chromecasts()
-# time.sleep(3)
-# pychromecast.discovery.stop_discovery(browser)
-# print(services,browser)
-# print(cast.media_controller.status)
-
+chromecast_name = "Home Mini"
 
 @app.route("/set_state")
 def toggle():
     outfile = open("config.json", "r")
-    #stringfile = str(outfile.read())
     state = request.args.get("state")
     if state.lower() in ['true', '1']:
         state = True
@@ -38,7 +32,6 @@ def toggle():
 @app.route("/get_state")
 def state():
     outfile = open("config.json", "r")
-    #stringfile = str(outfile.read())
     dict = json.load(outfile)
     dict["castOn"] = dict["castOn"]
     outfile.close()
@@ -55,7 +48,6 @@ def set_max_volume():
     elif volume < 0:
         volume = 0
     outfile = open("config.json", "r")
-    #stringfile = str(outfile.read())
     dict = json.load(outfile)
     dict["maxVolume"] = volume
     strout = json.dumps(dict)
@@ -71,7 +63,6 @@ def set_max_volume():
 @app.route("/get_max_volume")
 def get_max_volume():
     outfile = open("config.json", "r")
-    #stringfile = str(outfile.read())
     dict = json.load(outfile)
     volume = dict["maxVolume"]
     outfile.close()
@@ -90,7 +81,7 @@ def index():
 def main_cast():
     print('in loop')
     chromecasts, browser = pychromecast.get_listed_chromecasts(friendly_names=[
-                                                               "Home Mini"])
+                                                               chromecast_name])
     cast = chromecasts[0]
     cast.wait()
     time.sleep(1)
